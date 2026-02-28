@@ -58,10 +58,25 @@
 
     <div id="museum-content" class="hidden">
         <nav>
-            <a onclick="refresh('all')" id="btn-all">RANDOM</a>
-            <a onclick="refresh('little_house')" id="btn-house">LITTLE HOUSE</a>
-            <a onclick="refresh('DIY')" id="btn-diy">DIY</a>
-            <a onclick="refresh('hair_style')" id="btn-hair">HAIR STYLE</a>
+            <div class="nav-main">
+                <a onclick="refresh('all')" id="btn-all">RANDOM</a>
+                <a onclick="refresh('fashion')" id="btn-fashion">FASHION</a>
+                <a onclick="refresh('hair_style')" id="btn-hair">HAIR STYLE</a>
+                <a onclick="refresh('little_house')" id="btn-house">LITTLE HOUSE</a>
+                <a onclick="refresh('DIY')" id="btn-diy">DIY</a>
+                <a onclick="refresh('art')" id="btn-art">ART</a>
+            </div>
+            <div id="sub-fashion" class="nav-sub">
+                <a onclick="refresh('fashion/detail')">DETAIL</a>
+                <span style="color:#eee">|</span>
+                <a onclick="refresh('fashion/vintage')">VINTAGE</a>
+                <a onclick="refresh('fashion/ena')">E & A</a>
+            <div id="sub-art" class="nav-sub">
+                <a onclick="refresh('art/painting')">绘画 (Painting)</a>
+                <span style="color:#eee">|</span>
+                <a onclick="refresh('art/manga/Artist_A')">艺术家A (Manga)</a>
+                <a onclick="refresh('art/manga/Artist_B')">艺术家B (Manga)</a>
+            </div>
         </nav>
         <div id="gallery-wall" class="gallery"></div>
     </div>
