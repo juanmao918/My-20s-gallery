@@ -34,16 +34,39 @@
         </div>
 
         <div class="category">
-            <h2>👗 DIY</h2>
-            <div class="gallery">
-                <img src="DIY/p1.jpg">
-            </div>
+    <h2>🎨 DIY </h2>
+    <div class="gallery" id="diy-gallery">
+        </div>
+</div>
+
+<script>
+    const diyGallery = document.getElementById('diy-gallery');
+    // 假设你有 100 张图，名字是 p (1).jpg 到 p (100).jpg
+    for (let i = 1; i <= 100; i++) {
+        const img = document.createElement('img');
+        img.src = `DIY/p (${i}).jpg`; // 这里的名字要和文件夹里的完全对上
+        img.alt = `DIY作品-${i}`;
+        diyGallery.appendChild(img);
+    }
+</script>
         </div>
 
         <div class="category">
             <h3>🏠 我对居住的想象</h3>
-            <div class="gallery">
-                <img src="little house/p (1).jpg">
+            <div class="gallery" id="little house-gallery">
+                </div>
+</div>
+
+<script>
+    const littlehouseGallery = document.getElementById('littlehouse-gallery');
+    // 假设你有 100 张图，名字是 p (1).jpg 到 p (100).jpg
+    for (let i = 1; i <= 100; i++) {
+        const img = document.createElement('img');
+        img.src = `little house/p (${i}).jpg`; // 这里的名字要和文件夹里的完全对上
+        img.alt = `little house作品-${i}`;
+        littlehouseGallery.appendChild(img);
+    }
+</script>
             </div>
         </div>
     </div>
