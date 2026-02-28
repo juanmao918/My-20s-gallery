@@ -2,100 +2,85 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>20岁的喜好博物馆</title>
     <style>
-        body { font-family: "PingFang SC", sans-serif; background: #fdfdfd; margin: 0; padding: 0; color: #333; }
-        #login-box { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; }
-        nav { background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); padding: 20px; text-align: center; position: sticky; top: 0; box-shadow: 0 1px 5px rgba(0,0,0,0.05); z-index: 100; }
-        nav a { margin: 0 20px; text-decoration: none; color: #888; font-size: 15px; letter-spacing: 1px; cursor: pointer; transition: 0.3s; }
-        nav a:hover, nav a.active { color: #000; border-bottom: 1px solid #000; }
-        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; padding: 10px; }
-        .gallery img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 4px; cursor: zoom-in; transition: opacity 0.3s; background: #eee; }
-        .gallery img:hover { opacity: 0.8; }
+        :root { --gap: 10px; }
+        body { font-family: -apple-system, sans-serif; background: #fff; margin: 0; }
+        nav { position: sticky; top: 0; background: white; padding: 20px; text-align: center; border-bottom: 1px solid #eee; z-index: 10; }
+        nav a { margin: 0 15px; cursor: pointer; color: #888; text-decoration: none; font-size: 14px; transition: 0.3s; }
+        nav a:hover { color: #000; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--gap); padding: var(--gap); }
+        .gallery img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 4px; background: #f9f9f9; cursor: zoom-in; }
+        #login-box { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
     <div id="login-box">
-        <h3 style="font-weight: 300;">🔑 输入暗号进入屋子</h3>
-        <input type="password" id="password" style="padding:10px; border:1px solid #ddd; outline:none;">
-        <button onclick="checkPassword()" style="margin-top:20px; padding:8px 30px; background:#333; color:white; border:none; cursor:pointer;">开门</button>
+        <h3>🔑 输入暗号</h3>
+        <input type="password" id="pw" style="padding:8px; border:1px solid #ddd;">
+        <button onclick="entry()" style="margin-top:10px; padding:8px 20px;">开门</button>
     </div>
 
-    <div id="main-content" class="hidden">
-        <nav id="nav-bar">
-            <a onclick="loadCategory('random')">RANDOM</a>
-            <a onclick="loadCategory('little_house')">LITTLE HOUSE</a>
-            <a onclick="loadCategory('DIY')">DIY</a>
+    <div id="main" class="hidden">
+        <nav>
+            <a onclick="render('all')">首页随机</a>
+            <a onclick="render('little_house')">居住想象</a>
+            <a onclick="render('DIY')">DIY作品</a>
         </nav>
-        <div id="gallery-container" class="gallery"></div>
+        <div id="wall" class="gallery"></div>
     </div>
 
     <script>
-        // 1. 在这里配置你的文件夹和对应的图片数量
-        const config = [
-            { name: 'little_house', count: 100 },
-            { name: 'DIY', count: 15 }
+        // 【只需修改这里】
+        const password = "XXNlu0322"; 
+        const repo = [
+            { name: 'little_house', count: 100 }, // 确保文件夹名已改成 little_house
+            { name: 'DIY', count: 100 }          // 根据你截图显示，DIY好像有很多
         ];
+        const exts = ['.jpg', '.png', '.jpeg', '.JPG', '.PNG'];
 
-        // 2. 支持的格式列表
-        const extensions = ['.jpg', '.png', '.jpeg', '.JPG', '.PNG'];
-
-        function checkPassword() {
-            if (document.getElementById("password").value === 'XXNlu0322') {
-                document.getElementById("login-box").classList.add('hidden');
-                document.getElementById("main-content").classList.remove('hidden');
-                loadCategory('random');
-            } else { alert("暗号不对哦"); }
+        function entry() {
+            if(document.getElementById('pw').value === password) {
+                document.getElementById('login-box').classList.add('hidden');
+                document.getElementById('main').classList.remove('hidden');
+                render('all');
+            } else { alert('暗号错误'); }
         }
 
-        async function loadCategory(target) {
-            const container = document.getElementById('gallery-container');
-            container.innerHTML = '';
-            
-            let allImages = [];
+        async function render(mode) {
+            const wall = document.getElementById('wall');
+            wall.innerHTML = '加载中...';
+            let list = [];
 
-            // 筛选需要展示的图片路径
-            config.forEach(cat => {
-                if (target === 'random' || target === cat.name) {
+            repo.forEach(cat => {
+                if (mode === 'all' || mode === cat.name) {
                     for (let i = 1; i <= cat.count; i++) {
-                        allImages.push({ folder: cat.name, index: i });
+                        list.push({ path: `${cat.name}/p (${i})` });
                     }
                 }
             });
 
-            if (target === 'random') {
-                allImages.sort(() => Math.random() - 0.5);
-            }
+            if (mode === 'all') list.sort(() => Math.random() - 0.5);
 
-            // 渲染图片
-            allImages.forEach(item => {
-                const imgEntity = document.createElement('img');
-                const basePath = `${item.folder}/p (${item.index})`;
-                
-                // 核心逻辑：尝试不同后缀
-                tryLoad(imgEntity, basePath, 0);
-                
-                imgEntity.onclick = () => window.open(imgEntity.src, '_blank');
-                container.appendChild(imgEntity);
+            wall.innerHTML = '';
+            list.forEach(item => {
+                const img = document.createElement('img');
+                wall.appendChild(img);
+                // 自动尝试后缀
+                tryNext(img, item.path, 0);
+                img.onclick = () => window.open(img.src);
             });
         }
 
-        // 递归尝试加载不同后缀
-        function tryLoad(imgElement, pathWithoutExt, extIndex) {
-            if (extIndex >= extensions.length) return; // 试遍了都没找到
-            
-            const currentSrc = pathWithoutExt + extensions[extIndex];
-            const tester = new Image();
-            tester.src = currentSrc;
-            
-            tester.onload = () => {
-                imgElement.src = currentSrc; // 加载成功，赋值
-            };
-            tester.onerror = () => {
-                tryLoad(imgElement, pathWithoutExt, extIndex + 1); // 失败，尝试下一个后缀
-            };
+        function tryNext(el, base, index) {
+            if (index >= exts.length) return;
+            let test = new Image();
+            test.src = base + exts[index];
+            test.onload = () => el.src = test.src;
+            test.onerror = () => tryNext(el, base, index + 1);
         }
     </script>
 </body>
