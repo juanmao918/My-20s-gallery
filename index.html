@@ -125,7 +125,7 @@
             const test = new Image();
             test.src = base + FORMATS[idx];
             test.onload = () => imgTag.src = test.src;
-            test.onerror = () => findImage(imgTag, base, idx + 1);
+            test.onerror = () => findImage(imgTag, base, idx + 1); 
         }
     </script>
 </body>
