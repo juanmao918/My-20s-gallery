@@ -66,66 +66,66 @@
     </div>
 
     <script>
-        // --- 请在此修改你的配置 ---
+        // 【1. 这里改成你的密码】
         const MY_PASS = "XXNlu0322"; 
+
+        // 【2. 配置文件夹信息】
         const FOLDERS = [
-            { id: 'little_house', count: 100 }, // ⚠️请确保GitHub上文件夹名已改为 little_house
+            { id: 'little_house', count: 100 }, 
             { id: 'DIY', count: 100 }
         ];
-        const FORMATS = ['.jpg', '.png', '.jpeg', '.JPG', '.PNG', '.JPEG'];
-        // -----------------------
+
+        // 【3. 暴力尝试所有格式和命名（带空格和不带空格）】
+        const FORMATS = ['.jpg', '.png', '.jpeg', '.webp', '.JPG', '.PNG', '.WEBP'];
+        const NAMES = ["p (${i})", "p(${i})"]; 
 
         function checkAccess() {
-            const input = document.getElementById('pw-input').value;
-            if(input === MY_PASS) {
-                // 核心跳转逻辑：移除登录页，显示内容页
+            if(document.getElementById('pw-input').value === MY_PASS) {
                 document.getElementById('login-page').remove(); 
                 document.getElementById('museum-content').classList.remove('hidden');
                 refresh('all');
-            } else {
-                alert('暗号不对哦，再想想？');
-            }
+            } else { alert('暗号不对哦'); }
         }
 
-        // 监听回车键开门
-        document.getElementById('pw-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') checkAccess();
-        });
-
-        async function refresh(mode) {
+        function refresh(mode) {
             const wall = document.getElementById('gallery-wall');
-            wall.innerHTML = '';
-            
-            // 更新导航高亮
+            wall.innerHTML = '加载中...';
             document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-            if(mode === 'all') document.getElementById('btn-all').classList.add('active');
             
-            let photoList = [];
+            let list = [];
             FOLDERS.forEach(cat => {
                 if (mode === 'all' || mode === cat.id) {
                     for (let i = 1; i <= cat.count; i++) {
-                        photoList.push({ path: `${cat.id}/p(${i})${extension}`;
+                        list.push({ folder: cat.id, index: i });
                     }
                 }
             });
 
-            if (mode === 'all') photoList.sort(() => Math.random() - 0.5);
+            if (mode === 'all') list.sort(() => Math.random() - 0.5);
 
-            photoList.forEach(item => {
+            wall.innerHTML = '';
+            list.forEach(item => {
                 const img = document.createElement('img');
                 wall.appendChild(img);
-                // 智能尝试不同格式
-                findImage(img, item.path, 0);
+                tryAll(img, item.folder, item.index, 0, 0);
                 img.onclick = () => window.open(img.src);
             });
         }
 
-        function findImage(imgTag, base, idx) {
-            if (idx >= FORMATS.length) return;
-            const test = new Image();
-            test.src = base + FORMATS[idx];
-            test.onload = () => imgTag.src = test.src;
-            test.onerror = () => findImage(imgTag, base, idx + 1); 
+        function tryAll(img, folder, i, nIdx, eIdx) {
+            if (nIdx >= NAMES.length) return; 
+            let name = NAMES[nIdx].replace('${i}', i);
+            let path = folder + '/' + name + FORMATS[eIdx];
+            let t = new Image();
+            t.src = path;
+            t.onload = () => img.src = path;
+            t.onerror = () => {
+                if (eIdx < FORMATS.length - 1) {
+                    tryAll(img, folder, i, nIdx, eIdx + 1);
+                } else {
+                    tryAll(img, folder, i, nIdx + 1, 0);
+                }
+            };
         }
     </script>
 </body>
