@@ -104,7 +104,7 @@
             FOLDERS.forEach(cat => {
                 if (mode === 'all' || mode === cat.id) {
                     for (let i = 1; i <= cat.count; i++) {
-                        photoList.push({ path: `${cat.id}/p(${i})` });
+                        photoList.push({ path: `${cat.id}/p(${i})${extension}`;
                     }
                 }
             });
