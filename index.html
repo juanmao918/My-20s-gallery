@@ -28,6 +28,57 @@
         nav a { margin: 0 20px; cursor: pointer; color: #999; text-decoration: none; font-size: 14px; letter-spacing: 2px; transition: 0.3s; font-weight: 300; }
         nav a:hover, nav a.active { color: #000; font-weight: 500; }
 
+        /* --- 新增：下拉菜单逻辑 --- */
+
+
+        /* 导航容器，确保链接在一行显示 */
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+
+        /* 每一个含有下拉菜单的包装框 */
+        .nav-item {
+            position: relative; /* 为子菜单提供定位基准 */
+            display: inline-block;
+        }
+
+        /* 下拉菜单本身 */
+        .nav-sub {
+            display: none;      /* 默认隐藏 */
+            position: absolute; /* 绝对定位，不占用下方照片墙空间 */
+            top: 100%;          /* 紧贴一级菜单下方 */
+            left: 50%;
+            transform: translateX(-50%); /* 居中对齐 */
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border: 1px solid #f0f0f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            z-index: 1000;
+            flex-direction: column; /* 子菜单垂直排列 */
+            gap: 10px;
+        }
+
+        /* 当鼠标移入 nav-item 时，显示 nav-sub */
+        .nav-item:hover .nav-sub {
+            display: flex;
+        }
+
+        /* 下拉菜单里的文字样式 */
+        .nav-sub a {
+            font-size: 12px !important;
+            color: #999 !important;
+            white-space: nowrap; /* 防止换行 */
+            margin: 0 !important;
+        }
+
+        .nav-sub a:hover {
+            color: #000 !important;
+        }
+
         /* 4. 照片墙样式 */
         .gallery { 
             display: grid; 
@@ -115,7 +166,8 @@
             
             let list = [];
             FOLDERS.forEach(cat => {
-                if (mode === 'all' || mode === cat.id) {
+                // 如果模式匹配，或者是该模式的子路径（比如 mode 是 'fashion', cat.id 是 'fashion/detail'）
+                if (mode === 'all' || cat.id === mode || cat.id.startsWith(mode + '/')) {
                     for (let i = 1; i <= cat.count; i++) {
                         list.push({ folder: cat.id, index: i });
                     }
